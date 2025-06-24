@@ -1,0 +1,1 @@
+web: gunicorn cctv_monitoring.wsgi:application

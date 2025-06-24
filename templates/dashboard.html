@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | CCTV Monitoring{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Dashboard Overview</h2>
+
+<div class="row text-center g-4">
+  <div class="col-md-6 col-lg-4">
+    <div class="card p-4">
+      <h6 class="text-muted">Total Police Stations</h6>
+      <h2>{{ ps_count }}</h2>
+    </div>
+  </div>
+  <div class="col-md-6 col-lg-4">
+    <div class="card p-4">
+      <h6 class="text-muted">Active CCTVs</h6>
+      <h2>{{ cctv_count }}</h2>
+    </div>
+  </div>
+  <div class="col-md-12 col-lg-4">
+    <div class="card p-4">
+      <h6 class="text-muted">Locations</h6>
+      <h2>{{ locations|length }}</h2>
+    </div>
+  </div>
+</div>
+{% endblock %}

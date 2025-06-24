@@ -1,0 +1,11 @@
+<h3>Areas under {{ station.name }}</h3>
+
+<ul class="list-group">
+    {% for area in areas %}
+        <li class="list-group-item">
+            <strong>{{ area.name }}</strong> — {{ area.cctv_count }} CCTVs
+        </li>
+    {% empty %}
+        <li class="list-group-item">No areas found.</li>
+    {% endfor %}
+</ul>

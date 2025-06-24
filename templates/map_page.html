@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Police Station Map View{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+  <h2 class="mb-4 text-primary fw-bold">📍 Select a Police Station</h2>
+
+  <div class="row g-3">
+    {% for station in stations %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-body">
+            <h5 class="card-title text-dark">{{ station.name }}</h5>
+            <p class="card-text text-muted"><i class="bi bi-geo-alt"></i> {{ station.area }}</p>
+            <a href="{% url 'station_cctvs' station.id %}" class="btn btn-outline-primary w-100">View CCTV Map</a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12">
+        <div class="alert alert-warning text-center">
+          🚫 No police stations found.
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="mt-4">
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary">⬅ Back to Dashboard</a>
+  </div>
+</div>
+{% endblock %}

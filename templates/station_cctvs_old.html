@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>CCTV Map - {{ station.name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 600px;
+            border: 2px solid #ccc;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>{{ station.name }} CCTV Map</h3>
+        <a href="{% url 'map_page' %}" class="btn btn-secondary">⬅ Back</a>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <input id="areaSearch" type="text" class="form-control" placeholder="🔍 Search CCTV Area Name" oninput="filterMarkers()">
+        </div>
+        <div class="col-md-4 form-check form-switch mt-1">
+            <input class="form-check-input" type="checkbox" id="heatToggle" onchange="toggleHeatMap(this)">
+            <label class="form-check-label" for="heatToggle">Show Heatmap</label>
+        </div>
+    </div>
+
+    <div id="map"></div>
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+<script>
+    const map = L.map('map').setView([22.7, 88.9], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+    }).addTo(map);
+
+    const allMarkers = [];
+    const heatData = [];
+
+    {% for cam in cctvs %}
+        const marker = L.circleMarker([{{ cam.latitude }}, {{ cam.longitude }}], {
+            radius: 6,
+            color: {% if cam.is_active %}'green'{% else %}'red'{% endif %},
+            fillColor: {% if cam.is_active %}'green'{% else %}'red'{% endif %},
+            fillOpacity: 0.8
+        })
+        .bindPopup(`
+            <strong>IP:</strong> {{ cam.ip_address }}<br>
+            <strong>Area:</strong> {{ cam.cctv_area.name }}<br>
+            <strong>Status:</strong> {% if cam.is_active %}Active{% else %}Inactive{% endif %}<br>
+            <strong>Last Ping:</strong> {{ cam.last_ping|default:"N/A" }}<br>
+            {% if cam.thumbnail_url %}
+                <img src="{{ cam.thumbnail_url }}" width="200">
+            {% endif %}
+        `)
+        .addTo(map);
+
+        marker.cctv_area = "{{ cam.cctv_area.name|lower }}";
+        allMarkers.push(marker);
+        heatData.push([{{ cam.latitude }}, {{ cam.longitude }}]);
+    {% endfor %}
+
+    // Heatmap Layer
+    const heatLayer = L.heatLayer(heatData, {
+        radius: 20,
+        blur: 15,
+        gradient: {0.4: 'blue', 0.6: 'lime', 0.9: 'red'}
+    });
+
+    function toggleHeatMap(el) {
+        if (el.checked) {
+            heatLayer.addTo(map);
+        } else {
+            map.removeLayer(heatLayer);
+        }
+    }
+
+    // Filter Function
+    function filterMarkers() {
+        const search = document.getElementById('areaSearch').value.toLowerCase();
+        allMarkers.forEach(m => {
+            if (m.cctv_area.includes(search)) {
+                m.addTo(map);
+            } else {
+                map.removeLayer(m);
+            }
+        });
+    }
+
+</script>
+
+</body>
+</html>
