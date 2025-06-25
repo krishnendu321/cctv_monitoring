@@ -4,6 +4,12 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from .models import CCTVArea
 from django.db.models import Count
+from django.contrib.auth.views import LogoutView
+
+
+class CustomLogoutView(LogoutView):
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
 @login_required
 def dashboard(request):

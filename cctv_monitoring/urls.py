@@ -19,6 +19,8 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from django.shortcuts import redirect
 from monitoring import views
+from monitoring.views import CustomLogoutView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,7 +31,7 @@ urlpatterns = [
     # ✅ Auth Views
 
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    #path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     
     # ✅ App views
     path('dashboard/', views.dashboard, name='dashboard'),
@@ -38,4 +40,5 @@ urlpatterns = [
     # ✅ Include app URLs
     path('', include('monitoring.urls')),
     path('station/<int:ps_id>/cctvs/', views.station_cctvs, name='station_cctvs'),
+    path('logout/', CustomLogoutView.as_view(), name='logout')
 ]
