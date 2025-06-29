@@ -7,6 +7,8 @@ from django.db.models import Count
 from django.contrib.auth.views import LogoutView
 
 
+
+
 class CustomLogoutView(LogoutView):
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
@@ -22,6 +24,10 @@ def dashboard(request):
         'cctv_count': cctv_count,
         'locations': locations,
     })
+
+def all_cctv_map_view(request):
+    cctvs = CCTV.objects.select_related('cctv_area__police_station').all()
+    return render(request, 'all_cctv_map.html', {'cctvs': cctvs})
 
 @login_required
 def map_page(request):

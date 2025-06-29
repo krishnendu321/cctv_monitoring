@@ -20,10 +20,14 @@ from django.contrib.auth import views as auth_views
 from django.shortcuts import redirect
 from monitoring import views
 from monitoring.views import CustomLogoutView
+from monitoring.views import all_cctv_map_view
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+
+    
 
     # ✅ Redirect root to dashboard (protected by login)
     path('', lambda request: redirect('dashboard')),
@@ -36,6 +40,10 @@ urlpatterns = [
     # ✅ App views
     path('dashboard/', views.dashboard, name='dashboard'),
     path('dashboard/areas/', views.area_dashboard, name='area_dashboard'),
+
+    #All Map data populated
+
+    path('map/all/', all_cctv_map_view, name='all_cctv_map'),
 
     # ✅ Include app URLs
     path('', include('monitoring.urls')),
